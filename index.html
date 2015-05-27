@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Document</title>
+	<link rel="stylesheet" href="style/css.css">
+	<script>
+	
+	</script>
+</head>
+<body>
+
+	<div id="menu">
+		<ul>
+			<li id="delete">删除</li>
+			<li id="rename">重命名</li>
+			<li id="newfile">新建文件</li>
+			<li id="upload">上传文件</li>
+		</ul>
+	</div>
+
+	<form id="form1" name="form1" method="post" action="file.php" enctype="multipart/form-data">
+		<label>
+		<input type="file" name="file" />
+		</label>
+		<label>
+		<input type="submit" name="Submit" value="提交" />
+		</label>
+	</form>
+
+
+
+	<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+	<script src="javascript/javascript.js"></script>
+
+
+
+	 <script>
+
+	 var allFiles=$.ajax({url:'1.php',type:'post',data:{path:'demo/*.*'},async:false});
+	 var single_file_name=allFiles.responseText.split(";");
+	 for(var i=0;i<single_file_name.length;i++){
+		 var single_file=document.createElement("div");
+		 single_file.className="file";
+		 var image=document.createElement("img");
+		 image.className="fileimage";
+		 image.src="file.png";
+		 single_file.appendChild(image);
+		 var fileName=document.createElement("p");
+		 fileName.className="filename";
+		 fileName.innerText=single_file_name[i].substr(5)
+		 single_file.appendChild(fileName);
+		 document.body.appendChild(single_file);
+	}
+    </script>
+</body>
+</html>

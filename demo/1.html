@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='myApp'>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body ng-controller='Test'>
+<div>{{name}}</div>
+<script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.js"></script>
+
+<script>
+	var app=angular.module("myApp",[]);
+	app.controller('Test',
+		['$scope',function($scope){
+			$scope.name='xia'
+		}])
+</script>
+</body>
+</html>

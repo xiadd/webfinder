@@ -1,0 +1,46 @@
+.file{
+	display: inline-block;;
+	margin-right: 20px;
+}
+.fileimage{
+	width: 50px;
+}
+.filename{
+	font-size: 16px;
+	line-height: 15px;
+	margin: 0;
+	width: 50px;
+	overflow:hidden; 
+	white-space:nowrap;
+	text-overflow:ellipsis;
+}
+#menu{
+	height: 100px;
+	width: 85px;
+	border:1px solid #888;
+	border-radius: 3px;
+	position: absolute;
+	background: white;
+	display: none
+}
+#menu ul{
+	padding: 10px 0px;
+	margin:0;
+	list-style: none
+}
+#menu ul li{
+	cursor: pointer;
+	border-top: 1px solid #bbb;
+	line-height: 20px;
+	text-align: center;
+}
+#menu ul li:hover{
+	background: red;
+	color: white
+}
+.focus{
+	border:1px solid blue;
+	border-radius:2px;
+	display: inline-block;
+	margin-right: 20px;
+}

@@ -9,7 +9,7 @@
 	</script>
 </head>
 <body>
-
+	<!-- 右键菜单 -->
 	<div id="menu">
 		<ul>
 			<li id="delete">删除</li>
@@ -18,39 +18,57 @@
 			<li id="upload">上传文件</li>
 		</ul>
 	</div>
+	<!-- 上传表单 -->
+	<div class="dialog">
+		<a href="###" class="close">close</a>
+		<form id="form1" name="form1" method="post" action="file.php" enctype="multipart/form-data">
+			<label>
+			<input type="file" name="file" />
+			</label>
+			<label>
+			<input type="submit" name="Submit" value="提交" />
+			</label>
+		</form>
+		<h1 align="center">请选择文件并提交</h1>
+	</div>
 
-	<form id="form1" name="form1" method="post" action="file.php" enctype="multipart/form-data">
-		<label>
-		<input type="file" name="file" />
-		</label>
-		<label>
-		<input type="submit" name="Submit" value="提交" />
-		</label>
-	</form>
 
 
 
+	
 	<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 	<script src="javascript/javascript.js"></script>
+	<script>
+	//加载全部文件并显示
+	var allFiles=$.ajax({url:'1.php',type:'post',data:{path:'demo/*.*'},async:false});
+	var single_file_name=allFiles.responseText.split(";");
+	for(var i=0;i<single_file_name.length;i++){
+	 	var _psd=new RegExp('.+.psd'),
+	 		_ai=new RegExp('.+.ai'),
+	 		_pdf=new RegExp('.+.pdf');
+		//TODO:为啥正则这么写，因为之前学的因为没用都忘了==，时间足够的话重新写一下吧
+		var single_file=document.createElement("div");
+		single_file.className="file";
+		var image=document.createElement("img");
+		image.className="fileimage";
 
+		//判断文件类型并更换相应图标
+		if (_psd.test(single_file_name[i])) {
+			image.src="imgs/ps.png"
+		}else if (_ai.test(single_file_name[i])) {
+			image.src="imgs/ai.png"
+		}else if (_pdf.test(single_file_name[i])) {
+			image.src="imgs/pdf.png"
+		}else if (single_file_name[i].match(/.(?:gif|jpg|png)$/)) {
+			image.src="imgs/img.png"
+		}else{image.src="imgs/file.png"};
 
-
-	 <script>
-
-	 var allFiles=$.ajax({url:'1.php',type:'post',data:{path:'demo/*.*'},async:false});
-	 var single_file_name=allFiles.responseText.split(";");
-	 for(var i=0;i<single_file_name.length;i++){
-		 var single_file=document.createElement("div");
-		 single_file.className="file";
-		 var image=document.createElement("img");
-		 image.className="fileimage";
-		 image.src="file.png";
-		 single_file.appendChild(image);
-		 var fileName=document.createElement("p");
-		 fileName.className="filename";
-		 fileName.innerText=single_file_name[i].substr(5)
-		 single_file.appendChild(fileName);
-		 document.body.appendChild(single_file);
+		single_file.appendChild(image);
+		var fileName=document.createElement("p");
+		fileName.className="filename";
+		fileName.innerText=single_file_name[i].substr(5)
+		single_file.appendChild(fileName);
+		document.body.appendChild(single_file);
 	}
     </script>
 </body>

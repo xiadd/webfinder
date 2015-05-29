@@ -1,3 +1,58 @@
+function getStyle(obj,attr){
+	return obj.currentStyle?obj.currentStyle[attr]:getComputedStyle('obj',false)[attr]
+}
+
+function addEvent(obj,type,callback){
+	if (obj.addEventListener) {
+		obj.addEventListener(type,callback,false);
+	}else{
+		obj.attachEvent("on"+type,callback);
+	}
+}
+
+function remmoveEvent(obj,type,callback){
+	if (obj.removeEventListener) {
+		obj.removeEventListener(type,callback,false);
+	}else{
+		obj.detachEvent("on"+type,callback);
+	}
+}
+
+//dialog模块
+var Dialog={ 
+  init:function(obj){
+    
+    var dialog_out= document.createElement('div');
+    var header= document.createElement('h3');
+    var ybtn= document.createElement('button');
+    var nbtn= document.createElement('button');
+    ybtn.className="ybtn";
+    ybtn.innerText="确定";
+    nbtn.className="nbtn";
+    nbtn.innerText="取消"
+    header.innerText=(obj.inner)?obj.inner:"";
+    dialog_out.appendChild(header);
+    dialog_out.appendChild(ybtn);
+    dialog_out.appendChild(nbtn);
+    dialog_out.className="_dialog";
+    document.body.appendChild(dialog_out);
+    setTimeout(function(){
+      dialog_out.style.top='0px';
+    },300);  
+    nbtn.onclick=this.close;
+    if(obj.ybtnFn!=null){
+      ybtn.addEventListener('click',obj.ybtnFn,false);
+      ybtn.addEventListener('click',this.close,false)
+    }else{
+      ybtn.onclick=this.close;
+    }
+  },
+  close:function(){
+    document.body.removeChild(document.getElementsByClassName('_dialog')[0]);
+  }
+}
+
+
 window.onload=function(){
 	var menu=document.getElementById('menu'),
 		del=document.getElementById('delete'),
@@ -5,7 +60,11 @@ window.onload=function(){
 		rename=document.getElementById('rename'),
 		files=document.getElementsByClassName('file'),
 		file_content="<img src='file.png' alt=' 'class='fileimage'><p class='filename'>1.txt</p>",
-		file_active=document.getElementsByClassName('focus');
+		file_active=document.getElementsByClassName('focus'),
+		upload=document.getElementById('upload'),
+		_psd=new RegExp('.+.psd'),
+	 	_ai=new RegExp('.+.ai'),
+	 	_pdf=new RegExp('.+.pdf');
 
 		//contexmenu
 		function mouse_right(ev){
@@ -32,43 +91,77 @@ window.onload=function(){
 
 		//delfile
 		function deleteFile(){
-				var a_file_name=file_active[0].getElementsByTagName('p')[0].innerText;
-				file_active[0].remove();
-				$.post('1.php',{del_file:1,filename:a_file_name});
-			}
+			var a_file_name=file_active[0].getElementsByTagName('p')[0].innerText;
+			file_active[0].remove();
+			$.post('1.php',{del_file:1,filename:a_file_name});
+		}
 
 		//newFile
 		function newFile(){
-				var file_name=prompt("输入文件名");
-				var newfile_1=document.createElement('div');
-				$.post('1.php',{newfile:1,filename:file_name});
-				newfile_1.className='file';
-				newfile_1.innerHTML=file_content;
-				newfile_1.getElementsByClassName('filename')[0].innerText=file_name;
-				document.body.insertBefore(newfile_1,files[0]);	//新建文件总是放在第一个
-			}
+			var file_name=prompt("输入文件名");
+			//文件名是否为空
+			if (file_name=="") {
+				alert("文件名不能为空");
+				return ;
+			};
+			var newfile_1=document.createElement('div');
+			$.post('1.php',{newfile:1,filename:file_name});
+			newfile_1.className='file';
+			newfile_1.innerHTML=file_content;
+			var file_image= newfile_1.getElementsByTagName('img')[0]
+
+			if (_psd.test(file_name)) {
+				file_image.src="imgs/ps.png"
+			}else if (_ai.test(file_name)) {
+				file_image.src="imgs/ai.png"
+			}else if (_pdf.test(file_name)) {
+				file_image.src="imgs/pdf.png"
+			}else if (file_name.match(/.(?:gif|jpg|png)$/)){
+				file_image.src="imgs/img.png"
+			}else{file_image.src="imgs/file.png"}
+
+			newfile_1.getElementsByClassName('filename')[0].innerText=file_name;
+			document.body.insertBefore(newfile_1,files[0]);	//新建文件总是放在第一个
+		}
 
 		//renameFile
 		function renameFile(){
-				var file_name=prompt("输入文件名");
-				var old_name=file_active[0].getElementsByClassName('filename')[0].innerText;
-				$.post('1.php',{renamefile:1,filename:file_name,oldname:old_name},function(){file_active[0].getElementsByClassName('filename')[0].innerText=file_name;});
+			var file_name=prompt("输入文件名");
+			//文件名是否为空
+			if (file_name=="") {
+				alert("文件名不能为空");
+				return ;
+			};
+			var old_name=file_active[0].getElementsByClassName('filename')[0].innerText;
+			$.post('1.php',{renamefile:1,filename:file_name,oldname:old_name},function(){file_active[0].getElementsByClassName('filename')[0].innerText=file_name;});
 				
 		}
 
-		//uploadfile
+		//uploadFile
+		function uploadFile(){
+			var dialog=document.getElementsByClassName('dialog')[0];
+			dialog.style.top="-8px";
+			document.getElementsByClassName('close')[0].onclick=function(){
+				dialog.style.top="-300px";
+			}
+		}
 
-		//上传文件
+		//文件详细信息TODO
+
+
 
 		//事件委托
 		document.addEventListener('contextmenu',mouse_right,false)
 
 		//删除文件
-		del.addEventListener('click',deleteFile,false);
+		del.addEventListener('click',function(){Dialog.init({inner:"确认删除？",ybtnFn:deleteFile})},false);
 
 		//新建文件
 		newfile.addEventListener('click',newFile,false);
 
 		//重命名
-		rename.addEventListener('click',renameFile,false)
+		rename.addEventListener('click',renameFile,false);
+
+		//上传文件
+		upload.addEventListener('click',uploadFile,false);
 }

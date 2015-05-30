@@ -64,7 +64,8 @@ window.onload=function(){
 		upload=document.getElementById('upload'),
 		_psd=new RegExp('.+.psd'),
 	 	_ai=new RegExp('.+.ai'),
-	 	_pdf=new RegExp('.+.pdf');
+	 	_pdf=new RegExp('.+.pdf'),
+	 	_filepath=document.getElementsByClassName("_filepath");
 
 		//contexmenu
 		function mouse_right(ev){
@@ -90,14 +91,14 @@ window.onload=function(){
 		}
 
 		//delfile
-		function deleteFile(){
+		function deleteFile(file_path){
 			var a_file_name=file_active[0].getElementsByTagName('p')[0].innerText;
 			file_active[0].remove();
-			$.post('1.php',{del_file:1,filename:a_file_name});
+			$.post('1.php',{del_file:1,filename:a_file_name,path:file_path});
 		}
 
 		//newFile
-		function newFile(){
+		function newFile(file_path){
 			var file_name=prompt("输入文件名");
 			//文件名是否为空
 			if (file_name=="") {
@@ -105,7 +106,7 @@ window.onload=function(){
 				return ;
 			};
 			var newfile_1=document.createElement('div');
-			$.post('1.php',{newfile:1,filename:file_name});
+			$.post('1.php',{newfile:1,filename:file_name,path:file_path});
 			newfile_1.className='file';
 			newfile_1.innerHTML=file_content;
 			var file_image= newfile_1.getElementsByTagName('img')[0]
@@ -125,7 +126,7 @@ window.onload=function(){
 		}
 
 		//renameFile
-		function renameFile(){
+		function renameFile(file_path){
 			var file_name=prompt("输入文件名");
 			//文件名是否为空
 			if (file_name=="") {
@@ -133,7 +134,7 @@ window.onload=function(){
 				return ;
 			};
 			var old_name=file_active[0].getElementsByClassName('filename')[0].innerText;
-			$.post('1.php',{renamefile:1,filename:file_name,oldname:old_name},function(){file_active[0].getElementsByClassName('filename')[0].innerText=file_name;});
+			$.post('1.php',{renamefile:1,filename:file_name,oldname:old_name,path:file_path},function(){file_active[0].getElementsByClassName('filename')[0].innerText=file_name;});
 				
 		}
 
@@ -146,21 +147,22 @@ window.onload=function(){
 			}
 		}
 
-		//文件详细信息TODO
-
-
-
+		//对应文件夹
+		for (var i = 0; i < _filepath.length; i++) {
+			_filepath[i].file_path="demo"+i+"\\";
+		};
+		var path_focus=document.getElementsByClassName('path_focus');
 		//事件委托
 		document.addEventListener('contextmenu',mouse_right,false)
 
 		//删除文件
-		del.addEventListener('click',function(){Dialog.init({inner:"确认删除？",ybtnFn:deleteFile})},false);
+		del.addEventListener('click',function(){Dialog.init({inner:"确认删除？",ybtnFn:function(){deleteFile(path_focus[0].file_path)}})},false);
 
 		//新建文件
-		newfile.addEventListener('click',newFile,false);
+		newfile.addEventListener('click',function(){newFile(path_focus[0].file_path)},false);
 
 		//重命名
-		rename.addEventListener('click',renameFile,false);
+		rename.addEventListener('click',function(){renameFile(path_focus[0].file_path)},false);
 
 		//上传文件
 		upload.addEventListener('click',uploadFile,false);

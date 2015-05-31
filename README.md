@@ -25,8 +25,7 @@
 ### 图中删除文件时的一个bug已经修复，即未确定就删除了文件，因为删除函数自执行了。
 
 ## 为什么使用php
-```javascript
-function foo(){
-  alert(1)
-}
-```
+因为资料全,python学的知识还不足以做出这个东西出来，`主要是ajax`
+
+## 实现过程中的一些记录
+![pic](http://s1.momo.moda/2015/05/31/00ac8ed3b4327bdd4ebbebcb2ba10a00.jpg)

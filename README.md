@@ -43,4 +43,16 @@
 ## 还存在的bug
 只要发现了bug都尽力解决了，但难免疏漏
 
+
 ## 我是傻逼
+
+## 就是这么一回事啊
+
+```c++
+#include<iostream>
+using namespace std;
+#int main(){
+	cout<<"xia"<<endl;
+	return 0;
+}
+```
